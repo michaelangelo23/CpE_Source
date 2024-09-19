@@ -15,7 +15,7 @@ This repository contains the source codes for various lab activities and assignm
 ## Activities
 
 1. **[Activity 3](./Activity%203/)** - Source codes for Activity 3
-2. **[Activity 4](./Activity%204/)** - Source codes for Activity 4
+2. **[Activity 4](./Activtiy%204/)** - Source codes for Activity 4
 
 ## Assignments
 
