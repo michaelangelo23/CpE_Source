@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #define MAX_ATTEMPTS 3
-#define CORRECT_PASSCODE 1234
+#define CORRECT_PASSCODE 2410
 
 int main() {
     int attempts = 0;
