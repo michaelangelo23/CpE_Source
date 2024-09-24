@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <math.h>
 
+int choice;
+double base, result, a, b, c, root1, root2, discriminant;
+int exponent, n, i;
+unsigned long long factorial;
+
 int clearInputBuffer() {
     while (getchar() != '\n') {} // Clear invalid input
     return 0;
 }
 
 int main() {
-    int choice;
-
     do {
         // Display Menu
         printf("\nProblem Solver Menu:\n");
@@ -26,9 +29,6 @@ int main() {
 
         if (choice == 1) {
             // Power Problem Solver
-            double base, result;
-            int exponent;
-
             printf("Enter base: ");
             while (scanf("%lf", &base) != 1) {
                 clearInputBuffer(); // Clear invalid input
@@ -46,8 +46,7 @@ int main() {
 
         } else if (choice == 2) {
             // Factorial Problem Solver
-            int n, i;
-            unsigned long long factorial = 1;
+            factorial = 1;
 
             printf("Enter a positive integer: ");
             while (scanf("%d", &n) != 1 || n < 0) {
@@ -62,8 +61,6 @@ int main() {
 
         } else if (choice == 3) {
             // Quadratic Equation Solver
-            double a, b, c, discriminant, root1, root2;
-
             printf("Enter coefficient a: ");
             while (scanf("%lf", &a) != 1) {
                 clearInputBuffer(); // Clear invalid input
