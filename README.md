@@ -1,6 +1,6 @@
 # CpE_Source
 
-**Source codes for CpE Lab Activities**
+**Source Codes for CpE Lab Activities**
 
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
