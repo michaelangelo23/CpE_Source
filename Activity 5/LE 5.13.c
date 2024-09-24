@@ -1,19 +1,20 @@
 #include <stdio.h>
 #include <math.h>
 
+// variables declared in the global scope kay dili man pwede inside the function
 int choice;
 double base, result, a, b, c, root1, root2, discriminant;
 int exponent, n, i;
 unsigned long long factorial;
 
 int clearInputBuffer() {
-    while (getchar() != '\n') {} // Clear invalid input
+    while (getchar() != '\n') {} // clear invalid input
     return 0;
 }
 
 int main() {
     do {
-        // Display Menu
+        // display menu
         printf("\nProblem Solver Menu:\n");
         printf("1. Power Problem Solver\n");
         printf("2. Factorial Problem Solver\n");
@@ -22,22 +23,22 @@ int main() {
         printf("Enter your choice: ");
 
         if (scanf("%d", &choice) != 1) {
-            clearInputBuffer(); // Clear invalid input
+            clearInputBuffer(); // clear invalid input
             printf("Invalid input. Please enter a number.\n");
             continue;
         }
 
         if (choice == 1) {
-            // Power Problem Solver
+            // power problem solver
             printf("Enter base: ");
             while (scanf("%lf", &base) != 1) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter a number for base: ");
             }
 
             printf("Enter exponent: ");
             while (scanf("%d", &exponent) != 1) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter an integer for exponent: ");
             }
 
@@ -45,12 +46,12 @@ int main() {
             printf("%.2lf raised to the power of %d is %.2lf\n", base, exponent, result);
 
         } else if (choice == 2) {
-            // Factorial Problem Solver
+            // factorial problem solver
             factorial = 1;
 
             printf("Enter a positive integer: ");
             while (scanf("%d", &n) != 1 || n < 0) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter a positive integer: ");
             }
 
@@ -60,22 +61,22 @@ int main() {
             printf("Factorial of %d = %llu\n", n, factorial);
 
         } else if (choice == 3) {
-            // Quadratic Equation Solver
+            // quadratic equation solver
             printf("Enter coefficient a: ");
             while (scanf("%lf", &a) != 1) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter a number for coefficient a: ");
             }
 
             printf("Enter coefficient b: ");
             while (scanf("%lf", &b) != 1) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter a number for coefficient b: ");
             }
 
             printf("Enter coefficient c: ");
             while (scanf("%lf", &c) != 1) {
-                clearInputBuffer(); // Clear invalid input
+                clearInputBuffer(); // clear invalid input
                 printf("Invalid input. Please enter a number for coefficient c: ");
             }
 
