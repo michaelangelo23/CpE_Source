@@ -6,7 +6,7 @@ int main() { // variable declarations in the global scope
     int choice;
     double base, result, a, b, c, root1, root2, discriminant;
     int exponent, n;
-    unsigned long long factorial;
+    unsigned long long factorial = 1;
 
     while (1) { //display menu
         printf("\nProblem Solver Menu:\n");
@@ -32,7 +32,6 @@ int main() { // variable declarations in the global scope
 
         } else if (choice == 2) {
             //factorial problem solver
-            factorial = 1;
             printf("Enter a positive integer: ");
             scanf("%d", &n);
             for (int i = 1; i <= n; ++i) { // if i is less than or equal to n, multiply the factorial by i
