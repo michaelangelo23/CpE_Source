@@ -11,48 +11,46 @@ REVISION HISTORY
 #include <stdio.h>
 #include <stdbool.h>
 
-bool isLetter(char ch); // function prototype for isLetter and isVowel
-bool isVowel(char ch); 
+bool isLetter(char ch); // function prototypes for isLetter and isVowel
+bool isVowel(char ch);
 
-
-int main() // main function
+int main()
 {
-    char letter;    
+    char letter;
 
-    printf("Enter a letter: "); // Asks for a letter
-
+    // Asks for a letter
+    printf("Enter a letter: ");
     scanf("%c", &letter);
 
-    bool vowel = isVowel(letter);   // checks if the input is a vowel
-    bool letter = isLetter(letter); // checks if the input is a letter
-    
-    if (letter) // if the input is a letter
+    bool isALetter = isLetter(letter);
+    bool isAVowel = isVowel(letter);
+
+    if (isALetter)
     {
-        if (vowel) // if input is a vowel
+        if (isAVowel)
         {
-            printf("VOWEL!", letter);
+            printf("VOWEL!");
         }
         else
         {
-            printf("CONSONANT!", letter);
+            printf("CONSONANT!");
         }
     }
-    else // if the input is not a letter
+    else
     {
-        printf("INVALID INPUT!", letter);
+        printf("INVALID INPUT!");
     }
     return 0;
 }
 
-bool isVowel(char ch) // function to check if the input is a letter
-{
-    return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') || (ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U');
-}
 
-bool isLetter(char ch) // function to check if the input is a letter
+bool isLetter(char ch)
 {
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
 
-
+bool isVowel(char ch)
+{
+    return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') || (ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U');
+}
