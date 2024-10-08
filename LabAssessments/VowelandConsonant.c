@@ -9,7 +9,6 @@ REVISION HISTORY
 ============================================================================
 */
 #include <stdio.h>
-#include <math.h>
 #include <stdbool.h>
 
 bool isLetter(char ch); // function prototype for isLetter and isVowel
