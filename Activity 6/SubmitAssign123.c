@@ -1,8 +1,8 @@
 /*
 ============================================================================
-FILE : EXTRA.c
+FILE : fileName.c
 AUTHOR : Mickel Angelo Castroverde
-DESCRIPTION : Prints all the pattern of the requested outputs from Ms. Anore
+DESCRIPTION : projectDescription
 COPYRIGHT : © 2024 Mickel Angelo Castroverde. All rights reserved.
 REVISION HISTORY
 Date: 10-03-24 By: Mickel Angelo Castroverde Description: finished and refactored the project
@@ -47,6 +47,22 @@ int main() {
     }
 
     // Code for Number 3
+    for (int i = 1; i <= 9; i++) {
+        // Print leading spaces
+        for (int j = 9; j > i; j--) {
+            printf(" ");
+        }
+        // Print the number
+        printf("%d", i);
+        // Print asterisks
+        for (int k = 1; k < i; k++) {
+            printf("*");
+        }
+        // New line after each row
+        printf("\n");
+    }
+
+    // Code for Number 4
     for (i = 1; i <= limit; i++) {
         for (j = 1; j < i; j++) {
             printf("*");
@@ -57,6 +73,28 @@ int main() {
         }
         printf("%d", i);
         for (j = 1; j < i; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+    // Code for number 5
+    for (i = 1; i <= limit; i++) {
+        for (j = 1; j <= limit - i; j++) {
+            printf("*");
+        }
+        printf("%d", i);
+        if (i != limit) {
+            for (j = 1; j <= 2 * (i - 1); j++) {
+                printf(" ");
+            }
+            printf("%d", i);
+        } else {
+            for (j = 1; j <= 2 * (i - 1); j++) {
+                printf(" ");
+            }
+            printf("%d", i);
+        }
+        for (j = 1; j <= limit - i; j++) {
             printf("*");
         }
         printf("\n");
