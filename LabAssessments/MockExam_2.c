@@ -6,6 +6,8 @@ DESCRIPTION : mockeExam number 2 for MIdeterms
 COPYRIGHT : © 2024 Mickel Angelo Castroverde. All rights reserved.
 REVISION HISTORY
 |Date: nn/nn/nn |By: Mickel Angelo Castroverde |Description: finished and commented the code
+
+git config commit.gpgsign false
 ============================================================================
 */
 #include <stdio.h>
