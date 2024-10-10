@@ -1,5 +1,6 @@
 /*
 ============================================================================
+git -c commit.gpgsign=false commit
 FILE : 6_12.c
 AUTHOR : Mickel Angelo Castroverde
 DESCRIPTION : Vowel and Consonant; adding bool isLetter and boo isVowel in the code
