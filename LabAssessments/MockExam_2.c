@@ -10,28 +10,39 @@ REVISION HISTORY
 */
 #include <stdio.h>
 
-int main() 
+int main()
 {
-    int decimalNumber, remainder, i = 0;
-    char hexDigits[100];
+    int decimalNumber, remainder;
+    int place = 1;
 
-    printf("Enter a decimal number: "); // Read decimal number from user
+    printf("Enter a decimal number: "); // ask user for input
     scanf("%d", &decimalNumber);
 
-    while (decimalNumber != 0) { // Convert decimal to hexadecimal
+    printf("Hexadecimal: ");
+    while (decimalNumber != 0) { // converting decimal to hexadecimal
         remainder = decimalNumber % 16;
+
+        char hexDigit;  // Convert remainder to hexadecimal digit
         if (remainder < 10) {
-            hexDigits[i] = 48 + remainder; // ASCII value of digits 0-9
-        } else {
-            hexDigits[i] = 55 + remainder; // ASCII value of letters A-F
+            hexDigit = '0';
+            for (int j = 0; j < remainder; j++) {
+                hexDigit++;
+            }
         }
+        else
+        {
+            switch (remainder) {   // decimal to hexadicimal conversion using switch
+                case 10: hexDigit = 'A'; break;
+                case 11: hexDigit = 'B'; break;
+                case 12: hexDigit = 'C'; break;
+                case 13: hexDigit = 'D'; break;
+                case 14: hexDigit = 'E'; break;
+                case 15: hexDigit = 'F'; break;
+            }
+        }
+        printf("%c", hexDigit); // Print the hex digit directly
+
         decimalNumber = decimalNumber / 16;
-        i++;
-    }
-    
-    printf("Hexadecimal: ");  // Print hexadecimal number in reverse order
-    for (int j = i - 1; j >= 0; j--) {
-        printf("%c", hexDigits[j]);
     }
     printf("\n");
 
