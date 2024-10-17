@@ -12,6 +12,8 @@ git config commit.gpgsign false
 */
 #include <stdio.h>
 
+/// @brief 
+/// @return 
 int main()
 {
     int decimalNumber, remainder;
