@@ -33,7 +33,8 @@ int main()
         fgets(str, sizeof(str), stdin);  // read the input string from the user
 
         validInput = 1;                // assuming input is valid
-        for (int i = 0; str[i] != '\0'; i++) {
+        for (int i = 0; str[i] != '\0'; i++)
+        {
             if (str[i] >= '0' && str[i] <= '9')    // check if the character is a digit
             { 
                 printf("Invalid input. Please enter a string without numbers.\n");  // input is not valid
