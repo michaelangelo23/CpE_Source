@@ -20,38 +20,47 @@ modularization.
 
 #include <stdio.h>
 
-int searchElement(int *arr, int size, int num, int *index);
+int searchElement(int *arr, int size, int num, int *index); // function prototypes
 
 int main()
 {
     int size, num, searchNum, index;
 
-    printf("Enter number of entries: ");
+    printf("Enter number of entries: "); // prompt in number of entries
     scanf("%d", &size);
 
-    int arr[size];
-    for (int i = 0; i < size; i++)
+    int *arr = (int *)malloc(size * sizeof(int)); // dynamically allocate memory for the array
+    if (arr == NULL) // check if memory allocation was successful
     {
-        printf("Enter number: ");
+        printf("Memory allocation failed\n");
+        return 1;
+    }
+
+    for (int i = 0; i < size; i++) // declare an array of the specified size
+    {
+        printf("Enter number: "); // prompts user to enter a number
         scanf("%d", arr + i);
     }
 
-    printf("Search data: ");
+    printf("Search data: "); // prompts the user to enter the number to search
     scanf("%d", &searchNum);
 
-    if (searchElement(arr, size, searchNum, &index))
+    if (searchElement(arr, size, searchNum, &index)) // call searchElement function
     {
+        // If found, print the index
         printf("FOUND in Index %d\n", index);
     }
     else
     {
+        // If not found, print not found message
         printf("NOT FOUND\n");
     }
 
+    free(arr); // free the allocated memory
     return 0;
 }
 
-int searchElement(int *arr, int size, int num, int *index)
+int searchElement(int *arr, int size, int num, int *index) // function for searchElement
 {
     for (int i = 0; i < size; i++)
     {
