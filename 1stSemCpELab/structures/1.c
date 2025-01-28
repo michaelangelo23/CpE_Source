@@ -22,7 +22,7 @@ int main () {
         printf("\n");
     }
 
-    printf("\n\nHere are the books in order ^_^\n");
+    printf("\n\nThese are your books nigga!\n");
 
     for (i = 0; i < 5; i++) {
         printf("Title: %s\n", s1[i].title);
