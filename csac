@@ -1,0 +1,64 @@
+/*
+============================================================================
+FILE : Exercise1.1_castroverdeMickelAngelo.c
+
+AUTHOR : Mickel Angelo Castroverde
+
+DESCRIPTION :
+                            Exercise1.1
+
+Create a program which allows the user to input the properties of any object of
+ your choosing, represented by a struct. The user shall be able to specify how many
+  of such objects are to be created and inputted, but only up to a maximum of 20.
+   After the user inputs the objects, display everything that was inputted.
+
+      COPYRIGHT : © 2024 Mickel Angelo Castroverde. All rights reserved.
+
+----------------------------REVISION HISTORY--------------------------------
+Date: 11-05-24 By: Mickel Angelo Castroverde
+Description:
+============================================================================
+*/
+#include<stdio.h>
+
+struct student // done
+{
+    char name[100];
+    char course[100];
+    int idNumber;
+};
+
+int main(){
+
+    int i, numStudents = 0;
+    struct student info[3];
+
+    do
+    {
+        printf("How many students\t:");
+        scanf("%d", &numStudents);
+    }
+    while( numStudents > 20);
+
+    for(i = 0; i < numStudents; i++)
+    {
+        printf("Name of Student #%d\t:",i + 1);
+        scanf(" %s", &info[i].name);
+
+        printf("Course\t\t\t:", i + 1);
+        scanf(" %s", &info[i].course);
+
+        printf("I.D. Number\t\t: ");
+        scanf(" %d", &info[i].idNumber);
+
+    }
+
+    for(i = 0; i < numStudents; i++)
+    {
+        printf("\nStudent #%d\n", i + 1);
+        printf("Student Name\t: %s\n", info[i].name);
+        printf("Course\t\t: %s\n", info[i].course);
+        printf("I.D. Number\t: %d\n", info[i].idNumber);
+    }
+    return 0;
+}
