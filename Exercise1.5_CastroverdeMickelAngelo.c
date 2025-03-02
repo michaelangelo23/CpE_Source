@@ -1,47 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
-#ifdef _WIN32
-    #include <windows.h>
-    #define CLEAR_SCREEN_COMMAND "cls"
-#else
-    #define CLEAR_SCREEN_COMMAND "clear"
-#endif
+#define AllocFailed "Memory allocation failed.\n"
 
-typedef struct {
+typedef struct
+{
     char fullName[100];
     int studentID;
 } Student;
 
-typedef struct {
+typedef struct
+{
     char courseName[100];
-    char instructorName[100];
     int enrolledStudentCount;
     Student *enrolledStudents;
 } Course;
 
-typedef struct CourseNode {
+typedef struct CourseNode
+{
     Course courseData;
     struct CourseNode *previous;
     struct CourseNode *next;
 } CourseNode;
 
-typedef struct {
+typedef struct
+{
     CourseNode *head;
     CourseNode *tail;
     int length;
 } CourseLinkedList;
 
 void inputCourseName(Course *currentCourse);
-void inputInstructorName(Course *currentCourse);
 void inputStudentDetails(Course *currentCourse);
 void displayCourse(Course *currentCourse);
 void displayAllCourses(Course *courseArray, int totalCourses);
 void clearInputBuffer();
 void clearScreen();
 Course createCourse();
-Course* copyCourse(Course* sourceCourse);
 void freeCourseData(Course* course);
 
 CourseLinkedList* createEmptyCourseList();
@@ -55,15 +52,14 @@ void updateCourseAtPosition(CourseLinkedList *courseList, int position, Course u
 void destroyCourseList(CourseLinkedList *courseList);
 void manageCourseLinkedList(CourseLinkedList *courseList);
 
-int main() 
+int main()
 {
     int userChoice;
     CourseLinkedList *courseList = createEmptyCourseList();
 
-    do 
+    do
     {
         clearScreen();
-        printf("=== COURSE MANAGEMENT SYSTEM ===\n\n");
         printf("Choose operation:\n");
         printf("1. Create and Manage Courses and Students\n");
         printf("2. Manage Course List\n");
@@ -72,9 +68,9 @@ int main()
         scanf("%d", &userChoice);
         clearInputBuffer();
 
-        switch (userChoice) 
+        switch (userChoice)
         {
-            case 1: 
+            case 1:
             {
                 clearScreen();
                 int totalCourses;
@@ -82,30 +78,28 @@ int main()
                 scanf("%d", &totalCourses);
                 clearInputBuffer();
 
-                if (totalCourses <= 0) 
+                if (totalCourses <= 0)
                 {
-                    printf("Invalid number of courses!\n");
-                    printf("Press Enter to continue...");
+                    printf("Invalid number of courses.\n");
+                    printf("Press Enter to continue..");
                     getchar();
                     break;
                 }
 
                 Course *courseArray = (Course *)malloc(totalCourses * sizeof(Course));
-                
-                if (courseArray == NULL) 
+
+                if (courseArray == NULL)
                 {
-                    printf("Memory allocation failed!\n");
-                    printf("Press Enter to continue...");
+                    printf(AllocFailed);
+                    printf("Press Enter to continue..");
                     getchar();
                     break;
                 }
 
-                for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++) 
+                for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++)
                 {
                     clearScreen();
-                    printf("=== COURSE %d DETAILS ===\n\n", courseIndex + 1);
                     inputCourseName(&courseArray[courseIndex]);
-                    inputInstructorName(&courseArray[courseIndex]);
                     inputStudentDetails(&courseArray[courseIndex]);
                 }
 
@@ -113,41 +107,42 @@ int main()
                 displayAllCourses(courseArray, totalCourses);
 
                 // add courses to list
-                for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++) {
+                for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++)
+                {
                     addCourseAtEnd(courseList, courseArray[courseIndex]);
                 }
 
-                // free the array not the course data 
+                // free the array not the course data
                 free(courseArray);
 
-                printf("\nPress Enter to continue...");
+                printf("\nPress Enter to continue..");
                 getchar();
                 break;
             }
-            
+
             case 2:
                 clearScreen();
                 manageCourseLinkedList(courseList);
                 break;
-                
+
             case 0:
                 clearScreen();
-                printf("Exiting program. Goodbye!\n");
+                printf("Exiting program.\n");
                 destroyCourseList(courseList);
                 break;
-                
+
             default:
-                printf("Invalid choice! Please try again.\n");
-                printf("Press Enter to continue...");
+                printf("Invalid choice.\n");
+                printf("Press Enter to continue..");
                 getchar();
         }
-    } 
+    }
     while (userChoice != 0);
 
     return 0;
 }
 
-void clearInputBuffer()
+void clearInputBuffer() // got this before from chatgpt on capturing character constant \n
 {
     int character;
     while ((character = getchar()) != '\n');
@@ -155,65 +150,54 @@ void clearInputBuffer()
 
 void clearScreen()
 {
-    system(CLEAR_SCREEN_COMMAND);
+    system("cls");
+}
+
+void trimNewline(char* str)
+{
+    char* newline = strchr(str, '\n');
+    if (newline) {
+        *newline = '\0';
+    }
 }
 
 // course and student functions
-void inputCourseName(Course *currentCourse) 
+void inputCourseName(Course *currentCourse)
 {
     printf("Enter Name of Course: ");
     fgets(currentCourse->courseName, 100, stdin);
-    
-    for (int charIndex = 0; currentCourse->courseName[charIndex] != '\0'; charIndex++) {
-        if (currentCourse->courseName[charIndex] == '\n') {
-            currentCourse->courseName[charIndex] = '\0';
-            break;
-        }
-    }
+    trimNewline(currentCourse->courseName);
 }
 
-void inputInstructorName(Course *currentCourse)
+void inputStudentDetails(Course *currentCourse)
 {
-    printf("Enter Name of Instructor: ");
-    fgets(currentCourse->instructorName, 100, stdin);
-    // Remove newline character
-    for (int charIndex = 0; currentCourse->instructorName[charIndex] != '\0'; charIndex++) {
-        if (currentCourse->instructorName[charIndex] == '\n') {
-            currentCourse->instructorName[charIndex] = '\0';
-            break;
-        }
-    }
-}
-
-void inputStudentDetails(Course *currentCourse) {
     printf("How many students to create for %s? ", currentCourse->courseName);
     scanf("%d", &currentCourse->enrolledStudentCount);
     clearInputBuffer();
 
-    if (currentCourse->enrolledStudentCount <= 0) {
-        printf("Invalid number of students! Setting to 0.\n");
+    if (currentCourse->enrolledStudentCount <= 0)
+    {
+        printf("Invalid number of students, setting to 0.\n");
         currentCourse->enrolledStudentCount = 0;
         currentCourse->enrolledStudents = NULL;
         return;
     }
 
     currentCourse->enrolledStudents = (Student *)malloc(currentCourse->enrolledStudentCount * sizeof(Student));
-    if (currentCourse->enrolledStudents == NULL) {
-        printf("Memory allocation failed! Setting student count to 0.\n");
+
+    if (currentCourse->enrolledStudents == NULL)
+    {
+        printf(AllocFailed);
+        printf("Setting count to 0.\n"); // to know where the failed alloc is at
         currentCourse->enrolledStudentCount = 0;
         return;
     }
 
-    for (int studentIndex = 0; studentIndex < currentCourse->enrolledStudentCount; studentIndex++) {
+    for (int studentIndex = 0; studentIndex < currentCourse->enrolledStudentCount; studentIndex++)
+    {
         printf("Enter Name of Student %d: ", studentIndex + 1);
         fgets(currentCourse->enrolledStudents[studentIndex].fullName, 100, stdin);
-        // Remove newline character
-        for (int charIndex = 0; currentCourse->enrolledStudents[studentIndex].fullName[charIndex] != '\0'; charIndex++) {
-            if (currentCourse->enrolledStudents[studentIndex].fullName[charIndex] == '\n') {
-                currentCourse->enrolledStudents[studentIndex].fullName[charIndex] = '\0';
-                break;
-            }
-        }
+        trimNewline(currentCourse->enrolledStudents[studentIndex].fullName);
 
         printf("Enter ID Number of Student %d: ", studentIndex + 1);
         scanf("%d", &currentCourse->enrolledStudents[studentIndex].studentID);
@@ -221,91 +205,90 @@ void inputStudentDetails(Course *currentCourse) {
     }
 }
 
-void displayCourse(Course *currentCourse) {
-    printf("Course: %s (Instructor: %s)\n", currentCourse->courseName, currentCourse->instructorName);
+void displayCourse(Course *currentCourse)
+{
+    printf("Course: %s\n", currentCourse->courseName);
     printf("Enrolled Students:\n");
 
-    if (currentCourse->enrolledStudentCount == 0) {
+    if (currentCourse->enrolledStudentCount == 0)
+    {
         printf("  No students enrolled.\n");
-    } else {
-        for (int studentIndex = 0; studentIndex < currentCourse->enrolledStudentCount; studentIndex++) {
+    }
+    else
+    {
+        for (int studentIndex = 0; studentIndex < currentCourse->enrolledStudentCount; studentIndex++)
+        {
             printf("  %d. %s (ID: %d)\n", studentIndex + 1,
                    currentCourse->enrolledStudents[studentIndex].fullName,
                    currentCourse->enrolledStudents[studentIndex].studentID);
         }
     }
+
     printf("\n");
 }
 
-void displayAllCourses(Course *courseArray, int totalCourses) {
-    printf("=== COURSE INFORMATION ===\n\n");
-
-    for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++) {
+void displayAllCourses(Course *courseArray, int totalCourses)
+{
+    for (int courseIndex = 0; courseIndex < totalCourses; courseIndex++)
+    {
         displayCourse(&courseArray[courseIndex]);
     }
 }
 
-Course createCourse() {
+Course createCourse()
+{
     Course newCourse;
 
     inputCourseName(&newCourse);
-    inputInstructorName(&newCourse);
     inputStudentDetails(&newCourse);
 
     return newCourse;
 }
 
-Course* copyCourse(Course* sourceCourse) {
-    if (sourceCourse == NULL) {
-        return NULL;
-    }
-
-    Course* newCourse = (Course*)malloc(sizeof(Course));
-    if (newCourse == NULL) {
-        printf("Memory allocation failed!\n");
-        return NULL;
-    }
-
-    // Copy course name and instructor
-    strcpy(newCourse->courseName, sourceCourse->courseName);
-    strcpy(newCourse->instructorName, sourceCourse->instructorName);
-
-    // Copy student count
-    newCourse->enrolledStudentCount = sourceCourse->enrolledStudentCount;
-
-    // Allocate memory for students and copy them
-    if (newCourse->enrolledStudentCount > 0) {
-        newCourse->enrolledStudents = (Student*)malloc(newCourse->enrolledStudentCount * sizeof(Student));
-        if (newCourse->enrolledStudents == NULL) {
-            printf("Memory allocation failed!\n");
-            free(newCourse);
-            return NULL;
-        }
-
-        // Deep copy of all students
-        for (int studentIndex = 0; studentIndex < newCourse->enrolledStudentCount; studentIndex++) {
-            strcpy(newCourse->enrolledStudents[studentIndex].fullName, sourceCourse->enrolledStudents[studentIndex].fullName);
-            newCourse->enrolledStudents[studentIndex].studentID = sourceCourse->enrolledStudents[studentIndex].studentID;
-        }
-    } else {
-        newCourse->enrolledStudents = NULL;
-    }
-
-    return newCourse;
-}
-
-void freeCourseData(Course* course) {
-    if (course != NULL && course->enrolledStudents != NULL) {
+void freeCourseData(Course* course)
+{
+    if (course != NULL && course->enrolledStudents != NULL)
+    {
         free(course->enrolledStudents);
         course->enrolledStudents = NULL;
     }
 }
 
-// Doubly Linked List functions
-CourseLinkedList* createEmptyCourseList() {
+void copyCourseToNode(CourseNode *node, Course *course)
+{
+    strcpy(node->courseData.courseName, course->courseName);
+    node->courseData.enrolledStudentCount = course->enrolledStudentCount;
+
+    if (course->enrolledStudentCount > 0)
+    {
+        node->courseData.enrolledStudents = (Student*)malloc(course->enrolledStudentCount * sizeof(Student));
+        if (node->courseData.enrolledStudents == NULL)
+        {
+            printf(AllocFailed);
+            node->courseData.enrolledStudentCount = 0;
+            return;
+        }
+
+        // copy of all students
+        for (int studentIndex = 0; studentIndex < course->enrolledStudentCount; studentIndex++)
+        {
+            strcpy(node->courseData.enrolledStudents[studentIndex].fullName, course->enrolledStudents[studentIndex].fullName);
+            node->courseData.enrolledStudents[studentIndex].studentID = course->enrolledStudents[studentIndex].studentID;
+        }
+    }
+    else
+    {
+        node->courseData.enrolledStudents = NULL;
+    }
+}
+
+// linked list functions
+CourseLinkedList* createEmptyCourseList()
+{
     CourseLinkedList *newList = (CourseLinkedList*)malloc(sizeof(CourseLinkedList));
-    if (newList == NULL) {
-        printf("Memory allocation failed!\n");
+    if (newList == NULL)
+    {
+        printf(AllocFailed);
         exit(1);
     }
     newList->head = NULL;
@@ -314,111 +297,83 @@ CourseLinkedList* createEmptyCourseList() {
     return newList;
 }
 
-void addCourseAtFront(CourseLinkedList *courseList, Course newCourse) {
+void addCourseAtFront(CourseLinkedList *courseList, Course newCourse)
+{
     CourseNode *newNode = (CourseNode*)malloc(sizeof(CourseNode));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
+    if (newNode == NULL)
+    {
+        printf(AllocFailed);
         return;
     }
 
-    // Copy course data to the node
-    strcpy(newNode->courseData.courseName, newCourse.courseName);
-    strcpy(newNode->courseData.instructorName, newCourse.instructorName);
-    newNode->courseData.enrolledStudentCount = newCourse.enrolledStudentCount;
-
-    if (newCourse.enrolledStudentCount > 0) {
-        newNode->courseData.enrolledStudents = (Student*)malloc(newCourse.enrolledStudentCount * sizeof(Student));
-        if (newNode->courseData.enrolledStudents == NULL) {
-            printf("Memory allocation failed!\n");
-            free(newNode);
-            return;
-        }
-
-        // Deep copy of all students
-        for (int studentIndex = 0; studentIndex < newCourse.enrolledStudentCount; studentIndex++) {
-            strcpy(newNode->courseData.enrolledStudents[studentIndex].fullName, newCourse.enrolledStudents[studentIndex].fullName);
-            newNode->courseData.enrolledStudents[studentIndex].studentID = newCourse.enrolledStudents[studentIndex].studentID;
-        }
-    } else {
-        newNode->courseData.enrolledStudents = NULL;
-    }
-
+    // copy course data to node
+    copyCourseToNode(newNode, &newCourse);
     newNode->previous = NULL;
 
-    if (courseList->head == NULL) {
-        // List is empty
+    if (courseList->head == NULL)
+    {
+        // if list is empty
         newNode->next = NULL;
         courseList->head = newNode;
         courseList->tail = newNode;
-    } else {
-        // List is not empty
+    }
+    else
+    {
+        // if list is not empty
         newNode->next = courseList->head;
         courseList->head->previous = newNode;
         courseList->head = newNode;
     }
 
     courseList->length++;
-    printf("Course '%s' added at the front successfully!\n", newCourse.courseName);
+    printf("Course '%s' added at the front.\n", newCourse.courseName);
 }
 
-void addCourseAtEnd(CourseLinkedList *courseList, Course newCourse) {
+void addCourseAtEnd(CourseLinkedList *courseList, Course newCourse)
+{
     CourseNode *newNode = (CourseNode*)malloc(sizeof(CourseNode));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
+    if (newNode == NULL)
+    {
+        printf(AllocFailed);
         return;
     }
 
-    // Copy course data to the node
-    strcpy(newNode->courseData.courseName, newCourse.courseName);
-    strcpy(newNode->courseData.instructorName, newCourse.instructorName);
-    newNode->courseData.enrolledStudentCount = newCourse.enrolledStudentCount;
-
-    if (newCourse.enrolledStudentCount > 0) {
-        newNode->courseData.enrolledStudents = (Student*)malloc(newCourse.enrolledStudentCount * sizeof(Student));
-        if (newNode->courseData.enrolledStudents == NULL) {
-            printf("Memory allocation failed!\n");
-            free(newNode);
-            return;
-        }
-
-        // Deep copy of all students
-        for (int studentIndex = 0; studentIndex < newCourse.enrolledStudentCount; studentIndex++) {
-            strcpy(newNode->courseData.enrolledStudents[studentIndex].fullName, newCourse.enrolledStudents[studentIndex].fullName);
-            newNode->courseData.enrolledStudents[studentIndex].studentID = newCourse.enrolledStudents[studentIndex].studentID;
-        }
-    } else {
-        newNode->courseData.enrolledStudents = NULL;
-    }
-
+    // copy course data to node
+    copyCourseToNode(newNode, &newCourse);
     newNode->next = NULL;
 
-    if (courseList->head == NULL) {
-        // List is empty
+    if (courseList->head == NULL)
+    {
+        // if list is empty
         newNode->previous = NULL;
         courseList->head = newNode;
         courseList->tail = newNode;
-    } else {
-        // List is not empty
+    }
+    else
+    {
+        // if list is not empty
         newNode->previous = courseList->tail;
         courseList->tail->next = newNode;
         courseList->tail = newNode;
     }
 
     courseList->length++;
-    printf("Course '%s' added at the end successfully!\n", newCourse.courseName);
+    printf("Course '%s' added at the end.\n", newCourse.courseName);
 }
 
-void displayCoursesForward(CourseLinkedList *courseList) {
-    if (courseList->head == NULL) {
-        printf("Course list is empty!\n");
+void displayCoursesForward(CourseLinkedList *courseList)
+{
+    if (courseList->head == NULL)
+    {
+        printf("Course list is empty.\n");
         return;
     }
 
-    printf("\n=== COURSES (FORWARD ORDER) ===\n\n");
     CourseNode *currentNode = courseList->head;
     int position = 1;
 
-    while (currentNode != NULL) {
+    while (currentNode != NULL)
+    {
         printf("Position %d:\n", position);
         displayCourse(&currentNode->courseData);
         currentNode = currentNode->next;
@@ -426,17 +381,19 @@ void displayCoursesForward(CourseLinkedList *courseList) {
     }
 }
 
-void displayCoursesBackward(CourseLinkedList *courseList) {
-    if (courseList->head == NULL) {
-        printf("Course list is empty!\n");
+void displayCoursesBackward(CourseLinkedList *courseList)
+{
+    if (courseList->head == NULL)
+    {
+        printf("Course list is empty.\n");
         return;
     }
 
-    printf("\n=== COURSES (REVERSE ORDER) ===\n\n");
     CourseNode *currentNode = courseList->tail;
     int position = courseList->length;
 
-    while (currentNode != NULL) {
+    while (currentNode != NULL)
+    {
         printf("Position %d:\n", position);
         displayCourse(&currentNode->courseData);
         currentNode = currentNode->previous;
@@ -444,114 +401,112 @@ void displayCoursesBackward(CourseLinkedList *courseList) {
     }
 }
 
-void insertCourseAtPosition(CourseLinkedList *courseList, int position, Course newCourse) {
-    // Check if position is valid
-    if (position < 1 || position > courseList->length + 1) {
-        printf("Invalid position! Position should be between 1 and %d.\n", courseList->length + 1);
+void insertCourseAtPosition(CourseLinkedList *courseList, int position, Course newCourse)
+{
+    // check position if valid
+    if (position < 1 || position > courseList->length + 1)
+    {
+        printf("Invalid position, should be between 1 and %d.\n", courseList->length + 1);
         return;
     }
 
-    // If inserting at the beginning
-    if (position == 1) {
+    // inserting at the beginning
+    if (position == 1)
+    {
         addCourseAtFront(courseList, newCourse);
         return;
     }
 
-    // If inserting at the end
-    if (position == courseList->length + 1) {
+    //  inserting at the end
+    if (position == courseList->length + 1)
+    {
         addCourseAtEnd(courseList, newCourse);
         return;
     }
 
-    // Inserting in the middle
+    // inserting in the middle
     CourseNode *newNode = (CourseNode*)malloc(sizeof(CourseNode));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
+    if (newNode == NULL)
+    {
+        printf(AllocFailed);
         return;
     }
 
-    // Copy course data to the node
-    strcpy(newNode->courseData.courseName, newCourse.courseName);
-    strcpy(newNode->courseData.instructorName, newCourse.instructorName);
-    newNode->courseData.enrolledStudentCount = newCourse.enrolledStudentCount;
+    // copy course data to node
+    copyCourseToNode(newNode, &newCourse);
 
-    if (newCourse.enrolledStudentCount > 0) {
-        newNode->courseData.enrolledStudents = (Student*)malloc(newCourse.enrolledStudentCount * sizeof(Student));
-        if (newNode->courseData.enrolledStudents == NULL) {
-            printf("Memory allocation failed!\n");
-            free(newNode);
-            return;
-        }
-
-        // Deep copy of all students
-        for (int studentIndex = 0; studentIndex < newCourse.enrolledStudentCount; studentIndex++) {
-            strcpy(newNode->courseData.enrolledStudents[studentIndex].fullName, newCourse.enrolledStudents[studentIndex].fullName);
-            newNode->courseData.enrolledStudents[studentIndex].studentID = newCourse.enrolledStudents[studentIndex].studentID;
-        }
-    } else {
-        newNode->courseData.enrolledStudents = NULL;
-    }
-
-    // Find the node at position - 1
+    // find node at position - 1
     CourseNode *currentNode = courseList->head;
-    for (int nodeIndex = 1; nodeIndex < position - 1; nodeIndex++) {
+    for (int nodeIndex = 1; nodeIndex < position - 1; nodeIndex++)
+    {
         currentNode = currentNode->next;
     }
 
-    // Insert the new node
+    // insert new node
     newNode->next = currentNode->next;
     newNode->previous = currentNode;
     currentNode->next->previous = newNode;
     currentNode->next = newNode;
 
     courseList->length++;
-    printf("Course '%s' inserted at position %d successfully!\n", newCourse.courseName, position);
+    printf("Course '%s' inserted at position %d.\n", newCourse.courseName, position);
 }
 
-void deleteCourseAtPosition(CourseLinkedList *courseList, int position) {
-    // Check if list is empty
-    if (courseList->head == NULL) {
-        printf("Course list is empty!\n");
+void deleteCourseAtPosition(CourseLinkedList *courseList, int position)
+{
+    // check if list is empty
+    if (courseList->head == NULL)
+    {
+        printf("Course list is empty.\n");
         return;
     }
 
-    // Check if position is valid
-    if (position < 1 || position > courseList->length) {
-        printf("Invalid position! Position should be between 1 and %d.\n", courseList->length);
+    // check if position is valid
+    if (position < 1 || position > courseList->length)
+    {
+        printf("Invalid position, should be between 1 and %d.\n", courseList->length);
         return;
     }
 
     CourseNode *nodeToDelete;
 
-    // If removing from the beginning
-    if (position == 1) {
+    // removing the first node
+    if (position == 1)
+    {
         nodeToDelete = courseList->head;
 
-        if (courseList->length == 1) {
-            // Only one node in the list
+        if (courseList->length == 1)
+        {
+            // if onl;y one node in the list
             courseList->head = NULL;
             courseList->tail = NULL;
-        } else {
-            // More than one node
+        }
+        else
+        {
+            // if more than one node
             courseList->head = courseList->head->next;
             courseList->head->previous = NULL;
         }
     }
-    // If removing from the end
-    else if (position == courseList->length) {
+    // removing the last node
+    else if (position == courseList->length)
+    {
         nodeToDelete = courseList->tail;
         courseList->tail = courseList->tail->previous;
         courseList->tail->next = NULL;
     }
-    // Removing from the middle
-    else {
-        // Find the node at the position
+
+    // removing the middle
+    else
+    {
+        // find node at the position
         nodeToDelete = courseList->head;
-        for (int nodeIndex = 1; nodeIndex < position; nodeIndex++) {
+        for (int nodeIndex = 1; nodeIndex < position; nodeIndex++)
+        {
             nodeToDelete = nodeToDelete->next;
         }
 
-        // Update the links
+        // update links
         nodeToDelete->previous->next = nodeToDelete->next;
         nodeToDelete->next->previous = nodeToDelete->previous;
     }
@@ -559,102 +514,93 @@ void deleteCourseAtPosition(CourseLinkedList *courseList, int position) {
     char deletedCourseName[100];
     strcpy(deletedCourseName, nodeToDelete->courseData.courseName);
 
-    // Free the students array inside the course data
-    if (nodeToDelete->courseData.enrolledStudents != NULL) {
+    // free the array mem
+    if (nodeToDelete->courseData.enrolledStudents != NULL)
+    {
         free(nodeToDelete->courseData.enrolledStudents);
     }
 
-    // Free the node itself
+    // free node mem
     free(nodeToDelete);
 
     courseList->length--;
-    printf("Course '%s' at position %d removed successfully!\n", deletedCourseName, position);
+    printf("Course '%s' at position %d is removed.\n", deletedCourseName, position);
 }
 
-void updateCourseAtPosition(CourseLinkedList *courseList, int position, Course updatedCourse) {
-    // Check if list is empty
-    if (courseList->head == NULL) {
-        printf("Course list is empty!\n");
+void updateCourseAtPosition(CourseLinkedList *courseList, int position, Course updatedCourse)
+{
+    // check list if empty
+    if (courseList->head == NULL)
+    {
+        printf("Course list is empty.\n");
         return;
     }
 
-    // Check if position is valid
-    if (position < 1 || position > courseList->length) {
-        printf("Invalid position! Position should be between 1 and %d.\n", courseList->length);
+    // check position if valid
+    if (position < 1 || position > courseList->length)
+    {
+        printf("Invalid position, should be between 1 and %d.\n", courseList->length);
         return;
     }
 
-    // Find the node at the position
+    // find node at pos
     CourseNode *currentNode = courseList->head;
-    for (int nodeIndex = 1; nodeIndex < position; nodeIndex++) {
+    for (int nodeIndex = 1; nodeIndex < position; nodeIndex++)
+    {
         currentNode = currentNode->next;
     }
 
     char oldCourseName[100];
     strcpy(oldCourseName, currentNode->courseData.courseName);
 
-    // Free the existing students array
-    if (currentNode->courseData.enrolledStudents != NULL) {
+    // free existing array of students
+    if (currentNode->courseData.enrolledStudents != NULL)
+    {
         free(currentNode->courseData.enrolledStudents);
     }
 
-    // Update with new course data
-    strcpy(currentNode->courseData.courseName, updatedCourse.courseName);
-    strcpy(currentNode->courseData.instructorName, updatedCourse.instructorName);
-    currentNode->courseData.enrolledStudentCount = updatedCourse.enrolledStudentCount;
+    // update with new course data
+    copyCourseToNode(currentNode, &updatedCourse);
 
-    if (updatedCourse.enrolledStudentCount > 0) {
-        currentNode->courseData.enrolledStudents = (Student*)malloc(updatedCourse.enrolledStudentCount * sizeof(Student));
-        if (currentNode->courseData.enrolledStudents == NULL) {
-            printf("Memory allocation failed!\n");
-            currentNode->courseData.enrolledStudentCount = 0;
-            return;
-        }
-
-        // Deep copy of all students
-        for (int studentIndex = 0; studentIndex < updatedCourse.enrolledStudentCount; studentIndex++) {
-            strcpy(currentNode->courseData.enrolledStudents[studentIndex].fullName, updatedCourse.enrolledStudents[studentIndex].fullName);
-            currentNode->courseData.enrolledStudents[studentIndex].studentID = updatedCourse.enrolledStudents[studentIndex].studentID;
-        }
-    } else {
-        currentNode->courseData.enrolledStudents = NULL;
-    }
-
-    printf("Course at position %d updated from '%s' to '%s' successfully!\n", position, oldCourseName, updatedCourse.courseName);
+    printf("Course at position %d updated from '%s' to '%s'.\n", position, oldCourseName, updatedCourse.courseName);
 }
 
-void destroyCourseList(CourseLinkedList *courseList) {
-    if (courseList == NULL) {
+void destroyCourseList(CourseLinkedList *courseList)
+{
+    if (courseList == NULL)
+    {
         return;
     }
 
     CourseNode *currentNode = courseList->head;
     CourseNode *nextNode;
 
-    while (currentNode != NULL) {
+    while (currentNode != NULL)
+    {
         nextNode = currentNode->next;
 
-        // Free the students array inside the course data
-        if (currentNode->courseData.enrolledStudents != NULL) {
+        // free students array inside course data
+        if (currentNode->courseData.enrolledStudents != NULL)
+        {
             free(currentNode->courseData.enrolledStudents);
         }
 
-        // Free the node itself
+        // free node
         free(currentNode);
         currentNode = nextNode;
     }
 
     free(courseList);
-    printf("Course list freed successfully!\n");
+    printf("Course list freed.\n");
 }
 
-void manageCourseLinkedList(CourseLinkedList *courseList) {
+void manageCourseLinkedList(CourseLinkedList *courseList)
+{
     int menuChoice, coursePosition;
     Course tempCourse;
 
-    do {
-        printf("=== COURSE LIST MANAGEMENT ===\n\n");
-        printf("Doubly Linked List Operations:\n");
+    do
+    {
         printf("1. Add Course at Front\n");
         printf("2. Add Course at End\n");
         printf("3. Display Courses (Forward)\n");
@@ -667,47 +613,51 @@ void manageCourseLinkedList(CourseLinkedList *courseList) {
         scanf("%d", &menuChoice);
         clearInputBuffer();
 
-        switch (menuChoice) {
-            case 1: // Add at Front
+        switch (menuChoice)
+        {
+            case 1: // add at front
                 clearScreen();
-                printf("=== ADD COURSE AT FRONT ===\n\n");
                 tempCourse = createCourse();
                 addCourseAtFront(courseList, tempCourse);
-                // Free the temporary course's student data
-                if (tempCourse.enrolledStudents != NULL) {
+
+                // free temp course's student data
+                if (tempCourse.enrolledStudents != NULL)
+                {
                     free(tempCourse.enrolledStudents);
                 }
                 break;
 
-            case 2: // Add at End
+            case 2: // add at end
                 clearScreen();
-                printf("=== ADD COURSE AT END ===\n\n");
                 tempCourse = createCourse();
                 addCourseAtEnd(courseList, tempCourse);
-                // Free the temporary course's student data
-                if (tempCourse.enrolledStudents != NULL) {
+
+                // free temp course's student data
+                if (tempCourse.enrolledStudents != NULL)
+                {
                     free(tempCourse.enrolledStudents);
                 }
                 break;
 
-            case 3: // Display Forward
+            case 3: // display regularly
                 displayCoursesForward(courseList);
                 break;
 
-            case 4: // Display Backward
+            case 4: // display in reverse
                 displayCoursesBackward(courseList);
                 break;
 
-            case 5: // Insert at Position
+            case 5: //insert at pos
                 printf("Enter position to insert (1 to %d): ", courseList->length + 1);
                 scanf("%d", &coursePosition);
                 clearInputBuffer();
                 clearScreen();
-                printf("=== INSERT COURSE AT POSITION %d ===\n\n", coursePosition);
                 tempCourse = createCourse();
                 insertCourseAtPosition(courseList, coursePosition, tempCourse);
-                // Free the temporary course's student data
-                if (tempCourse.enrolledStudents != NULL) {
+
+                // free temp course's student data
+                if (tempCourse.enrolledStudents != NULL)
+                {
                     free(tempCourse.enrolledStudents);
                 }
                 break;
@@ -719,32 +669,34 @@ void manageCourseLinkedList(CourseLinkedList *courseList) {
                 deleteCourseAtPosition(courseList, coursePosition);
                 break;
 
-            case 7: 
+            case 7:
                 printf("Enter position to update (1 to %d): ", courseList->length);
                 scanf("%d", &coursePosition);
                 clearInputBuffer();
                 clearScreen();
-                printf("=== UPDATE COURSE AT POSITION %d ===\n\n", coursePosition);
                 tempCourse = createCourse();
                 updateCourseAtPosition(courseList, coursePosition, tempCourse);
 
-                if (tempCourse.enrolledStudents != NULL) {
+                if (tempCourse.enrolledStudents != NULL)
+                {
                     free(tempCourse.enrolledStudents);
                 }
                 break;
 
-            case 0: // Return to Main Menu
+            case 0: // return to menu
                 printf("Returning to Main Menu.\n");
                 break;
 
             default:
-                printf("Invalid choice! Please try again.\n");
+                printf("Invalid choice.\n");
         }
 
-        if (menuChoice != 0) {
-            printf("\nPress Enter to continue...");
+        if (menuChoice != 0)
+        {
+            printf("\nPress Enter to continue..");
             getchar();
             clearScreen();
         }
-    } while (menuChoice != 0);
+    }
+    while (menuChoice != 0);
 }
